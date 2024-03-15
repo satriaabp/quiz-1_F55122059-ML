@@ -5,9 +5,11 @@ import numpy as np
 # Baca gambar
 img = cv2.imread('/content/avatar-the-last-airbender-3.png', 0)
 
-# Resize gambar
-resized_img = cv2.resize(img, (700, 392))
-cv2_imshow(resized_img)
+# Dapatkan dimensi gambar (width dan height)
+height, width = img.shape
+
+print("Width:", width)
+print("Height:", height)
 
 # Cari nilai maksimum dan minimum pixel
 max_pixel = np.max(img)
@@ -15,3 +17,60 @@ min_pixel = np.min(img)
 
 print("Nilai maksimum pixel:", max_pixel)
 print("Nilai minimum pixel:", min_pixel)
+
+# Normalisasi gambar
+normalized_img = img / 255.0
+
+# Tampilkan gambar yang telah dinormalisasi
+cv2_imshow((normalized_img * 255).astype(np.uint8))
+
+# Flip horizontal
+flipped_horizontal = cv2.flip(normalized_img, 1)
+cv2_imshow((flipped_horizontal * 255).astype(np.uint8))
+
+# Flip vertical
+flipped_vertical = cv2.flip(normalized_img, 0)
+cv2_imshow((flipped_vertical * 255).astype(np.uint8))
+
+# Tambahkan noise Gaussian
+mean = 0
+variance = 0.01
+gaussian = np.random.normal(mean, variance, (height, width))
+noisy_image_gaussian = normalized_img + gaussian
+
+# Tampilkan gambar dengan noise Gaussian
+cv2_imshow((noisy_image_gaussian * 255).astype(np.uint8))
+
+# Tambahkan noise salt and pepper
+s_vs_p = 0.5
+amount = 0.004
+salt_pepper = np.zeros_like(normalized_img)
+salt = np.ceil(amount * normalized_img.size * s_vs_p)
+coords = [np.random.randint(0, i - 1, int(salt)) for i in normalized_img.shape]
+salt_pepper[tuple(coords)] = 1
+
+pepper = np.ceil(amount * normalized_img.size * (1. - s_vs_p))
+coords = [np.random.randint(0, i - 1, int(pepper)) for i in normalized_img.shape]
+salt_pepper[tuple(coords)] = 0
+
+noisy_image_salt_pepper = normalized_img + salt_pepper
+
+# Tampilkan gambar dengan noise salt and pepper
+cv2_imshow((noisy_image_salt_pepper * 255).astype(np.uint8))
+
+# Random crop
+crop_size = 250
+start_x = np.random.randint(0, width - crop_size)
+start_y = np.random.randint(0, height - crop_size)
+cropped_image_random = normalized_img[start_y:start_y+crop_size, start_x:start_x+crop_size]
+
+# Tampilkan gambar dengan random crop
+cv2_imshow((cropped_image_random * 255).astype(np.uint8))
+
+# Center crop
+center_x, center_y = width // 2, height // 2
+half_crop_size = crop_size // 2
+cropped_image_center = normalized_img[center_y-half_crop_size:center_y+half_crop_size, center_x-half_crop_size:center_x+half_crop_size]
+
+# Tampilkan gambar dengan center crop
+cv2_imshow((cropped_image_center * 255).astype(np.uint8))
