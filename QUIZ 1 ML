@@ -1,0 +1,17 @@
+import cv2
+from google.colab.patches import cv2_imshow
+import numpy as np
+
+# Baca gambar
+img = cv2.imread('/content/avatar-the-last-airbender-3.png', 0)
+
+# Resize gambar
+resized_img = cv2.resize(img, (700, 392))
+cv2_imshow(resized_img)
+
+# Cari nilai maksimum dan minimum pixel
+max_pixel = np.max(img)
+min_pixel = np.min(img)
+
+print("Nilai maksimum pixel:", max_pixel)
+print("Nilai minimum pixel:", min_pixel)
